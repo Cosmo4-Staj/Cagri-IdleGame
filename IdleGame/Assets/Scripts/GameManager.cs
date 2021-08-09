@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public GameObject Brick;
+    public GameObject Transporter;
+    public float xPos;
+    public float zPos;
 
     void Awake() 
     {
@@ -45,6 +48,13 @@ public class GameManager : MonoBehaviour
     }
     public void SpawnBrick()
     {
-        Instantiate(Brick,transform.position,Quaternion.identity);
+        xPos=  Random.Range(-8f,-1f);
+        zPos=  Random.Range(-12f,-9f);
+        Instantiate(Brick,new Vector3(xPos,0.2f,zPos),Quaternion.identity);
+    }
+
+    public void SpawnTransporter()
+    {
+        Instantiate(Transporter,new Vector3(-10f,0.05268812f,-5f),Quaternion.identity);
     }
 }
