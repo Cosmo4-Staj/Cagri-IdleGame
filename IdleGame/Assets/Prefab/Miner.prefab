@@ -1261,6 +1261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1996454915829836770}
   - component: {fileID: 1996454915836757002}
+  - component: {fileID: 1165378210755516961}
   m_Layer: 0
   m_Name: Miner
   m_TagString: Untagged
@@ -1303,6 +1304,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1165378210755516961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996454915829479362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 881fb2775aa54c14eb44560be0b653cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xPos: 0
+  zPos: 0
+  speed: 2
+  prefab: {fileID: 8055843099405764666, guid: ab330b42c7cfd5144bdeb99b5a09d24f, type: 3}
+  Ore: {fileID: 1292445681979452095, guid: 2a3cae4a4e2d1004dbdaf84e04790512, type: 3}
+  stop: 2
 --- !u!1 &1996454915829479364
 GameObject:
   m_ObjectHideFlags: 0

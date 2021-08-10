@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject Brick;
     public GameObject Transporter;
+    public GameObject Miner;
+    public GameObject Parent;
     public float xPos;
     public float zPos;
 
@@ -50,11 +52,21 @@ public class GameManager : MonoBehaviour
     {
         xPos=  Random.Range(-8f,-1f);
         zPos=  Random.Range(-12f,-9f);
-        Instantiate(Brick,new Vector3(xPos,0.2f,zPos),Quaternion.identity);
+        Instantiate(Brick,new Vector3(xPos,0.2f,zPos),Quaternion.identity,Parent.transform);
+        
     }
 
     public void SpawnTransporter()
     {
-        Instantiate(Transporter,new Vector3(-10f,0.05268812f,-5f),Quaternion.identity);
+        xPos=  Random.Range(1.5f,5.5f);
+        zPos=  Random.Range(0f,10f);
+        Instantiate(Transporter,new Vector3(xPos,0.05268812f,zPos),Quaternion.identity);
     }
+    public void SpawnMiner()
+    {
+        xPos=  Random.Range(-13f,-10f);
+        zPos=  Random.Range(-6f,0f);
+        Instantiate(Miner,new Vector3(xPos,0f,zPos),Quaternion.identity);
+    }
+    
 }

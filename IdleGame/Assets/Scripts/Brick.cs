@@ -5,36 +5,28 @@ using UnityEngine;
 public class Brick : MonoBehaviour
 {
     TransporterController playerManager;
-    public static Brick Instance;
+    public static Brick instance;
     public GameObject prefab;
+    public GameObject Parent;
     public float xPos;
     public float zPos;
-    //public GameObject Bricks;
     public List<Transform> brickPieces = new List<Transform>();
-
-    void Awake()
-    {
-        playerManager = FindObjectOfType<TransporterController>();
-
-        Instance = this;
-        
-        for (int i = 0; i < transform.childCount; i++)
+    private void Awake()
+    {        
+        if (instance == null)
         {
-
-            brickPieces.Add(transform.GetChild(i).transform);
+            instance = this;
         }
-    }
-
-    void Update() 
-    {
-        
-
     }
     public void SpawnBrick()
     {
         xPos=  Random.Range(-8f,-1f);
         zPos=  Random.Range(-12f,-9f);
-        Instantiate(prefab,new Vector3(xPos,0.2f,zPos),Quaternion.identity);
-        //brickPieces.Add(transform)
+        Instantiate(prefab,new Vector3(xPos,0.2f,zPos),Quaternion.identity,Parent.transform);
+        AddList();
+    }
+    public void AddList(){
+    playerManager = FindObjectOfType<TransporterController>();
+    brickPieces.Add(transform.GetChild(transform.childCount-1).transform);
     }
 }

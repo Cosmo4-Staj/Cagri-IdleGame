@@ -4,15 +4,50 @@ using UnityEngine;
 
 public class MinerController : MonoBehaviour
 {
+    public static MinerController instance;
+    TransporterController playerManager;
+    public float xPos;
+    public float zPos;
+    public float speed =2f;
+    public GameObject prefab;
+    public Transform Ore;
+    public float stop = 2f;
+    //var targetPos = Ore.position;
+        
     // Start is called before the first frame update
     void Start()
     {
-        
+        instance=this;
+        StartCoroutine(Spawn());    
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        float distanceToOre = Vector3.Distance(transform.position, Ore.position);
+        transform.position = Vector3.MoveTowards(transform.position, Ore.position, speed * Time.deltaTime);
+        SmoothFollow(Ore.position, 100f * 2f);
+        if (distanceToOre < stop)
+        {
+            Debug.Log(distanceToOre);
+            speed=0;
+        }
+    }
+
+
+    IEnumerator Spawn()
+    {
+        yield return new WaitForSeconds(3f);
+        Brick.instance.SpawnBrick();
+        StartCoroutine(Spawn());
+    }
+    private void SmoothFollow(Vector3 target, float smoothSpeed)
+    {
+        Vector3 direction = target - transform.position;
+        if (direction != Vector3.zero)
+        {
+           transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), smoothSpeed * Time.deltaTime); 
+        }
+            
     }
 }

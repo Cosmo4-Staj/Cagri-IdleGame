@@ -12,24 +12,19 @@ public class TransporterController : MonoBehaviour
     [SerializeField] private float stopDistance = 0.5f;
     public bool isTakeBrick = false;
     public GameObject build;
-    public int j =0;
+    public int j;
     // Start is called before the first frame update
     void Start()
     {
-        
+        j=0;
     }
-
     // Update is called once per frame
     void Update()
     {
         if (Aharfi.GetComponent<Transform>().GetChild(j).gameObject.activeSelf)
-        {  
-            Debug.Log("Aktif");
+        {
             j++;
-
         }
-
-
 
         if (!isTakeBrick)
         {
@@ -60,11 +55,9 @@ public class TransporterController : MonoBehaviour
 
     void FindBrick()
     {
-        
-        if (targetBrick || Brick.Instance.brickPieces.Count <= 0) return;
-        targetBrick = Brick.Instance.brickPieces[0];
-        Brick.Instance.brickPieces.Remove(targetBrick);
-        //targetBrick = FindGameObjectWithTag("brick").transform;
+        if (targetBrick || Brick.instance.brickPieces.Count <= 0) return;
+        targetBrick = Brick.instance.brickPieces[0];
+        Brick.instance.brickPieces.Remove(targetBrick);
     }
 
     private void SmoothFollow(Vector3 target, float smoothSpeed)
@@ -109,7 +102,5 @@ public class TransporterController : MonoBehaviour
             Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
             isTakeBrick=false;
             Aharfi.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
-            //j++;
-        
     }
 }
