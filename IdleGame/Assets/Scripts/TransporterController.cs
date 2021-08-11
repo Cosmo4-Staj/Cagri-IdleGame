@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class TransporterController : MonoBehaviour
 {
+    Animator TransporterAnimator;
     public GameObject worker;
     public Transform targetBrick;
     public float speed = 2f;
     public GameObject Aharfi;
     [SerializeField] private Transform brickPosition;
-    [SerializeField] private float stopDistance = 0.5f;
+    public float stopDistance = 0.5f;
     public bool isTakeBrick = false;
     public GameObject build;
     public int j;
     // Start is called before the first frame update
     void Start()
     {
+        TransporterAnimator = GetComponent<Animator>();
         j=0;
     }
     // Update is called once per frame
@@ -48,7 +50,8 @@ public class TransporterController : MonoBehaviour
         
         if (distanceToBrick < stopDistance)
         {
-            //Debug.Log(distanceToBrick);
+            Debug.Log("uzaklık   "+stopDistance);
+            
             Pick();
         }
     }
@@ -58,6 +61,8 @@ public class TransporterController : MonoBehaviour
         if (targetBrick || Brick.instance.brickPieces.Count <= 0) return;
         targetBrick = Brick.instance.brickPieces[0];
         Brick.instance.brickPieces.Remove(targetBrick);
+        TransporterAnimator.SetTrigger("Walk");
+        
     }
 
     private void SmoothFollow(Vector3 target, float smoothSpeed)
@@ -74,6 +79,7 @@ public class TransporterController : MonoBehaviour
     {
         if (targetBrick)
         {
+            TransporterAnimator.SetTrigger("Pick");
             Invoke("TakeBrick", 1f);
         }
     }
@@ -87,11 +93,13 @@ public class TransporterController : MonoBehaviour
 
     void Build()
     {
+        TransporterAnimator.SetTrigger("Walk");
         var distanceToBuild = Vector3.Distance(transform.position, build.transform.position);
         transform.position = Vector3.MoveTowards(transform.position, build.transform.position, speed * Time.deltaTime);
         SmoothFollow(build.transform.position, 100f * speed);
         if (distanceToBuild < stopDistance)
         {
+            TransporterAnimator.SetTrigger("Pick");
             Invoke("DropBrick", 1f);
 
         }
@@ -99,8 +107,9 @@ public class TransporterController : MonoBehaviour
 
     void DropBrick()
     {
-            Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
-            isTakeBrick=false;
-            Aharfi.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
+        
+        Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
+        isTakeBrick=false;
+        Aharfi.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
     }
 }

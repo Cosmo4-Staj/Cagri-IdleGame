@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MinerController : MonoBehaviour
 {
+    Animator MinerAnimator;
     public static MinerController instance;
     TransporterController playerManager;
     public float xPos;
@@ -17,6 +18,7 @@ public class MinerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MinerAnimator = GetComponent<Animator>();
         instance=this;
         StartCoroutine(Spawn());    
     }
@@ -24,6 +26,7 @@ public class MinerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         float distanceToOre = Vector3.Distance(transform.position, Ore.position);
         transform.position = Vector3.MoveTowards(transform.position, Ore.position, speed * Time.deltaTime);
         SmoothFollow(Ore.position, 100f * 2f);
@@ -31,6 +34,7 @@ public class MinerController : MonoBehaviour
         {
             Debug.Log(distanceToOre);
             speed=0;
+            MinerAnimator.SetTrigger("Mining");
         }
     }
 

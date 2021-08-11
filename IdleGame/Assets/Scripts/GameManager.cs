@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public GameObject Brick;
     public GameObject Transporter;
     public GameObject Miner;
+    public GameObject SuperWorker;
     public GameObject Parent;
     public float xPos;
     public float zPos;
@@ -67,6 +68,12 @@ public class GameManager : MonoBehaviour
         xPos=  Random.Range(-13f,-10f);
         zPos=  Random.Range(-6f,0f);
         Instantiate(Miner,new Vector3(xPos,0f,zPos),Quaternion.identity);
+    }
+    public void SpawnSuperWorker()
+    {
+        xPos=  Random.Range(1.5f,5.5f);
+        zPos=  Random.Range(0f,10f);
+        Instantiate(SuperWorker,new Vector3(xPos,0f,zPos),Quaternion.identity);
     }
     
 }
