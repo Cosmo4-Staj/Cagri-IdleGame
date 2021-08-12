@@ -8,26 +8,29 @@ public class TransporterController : MonoBehaviour
     public GameObject worker;
     public Transform targetBrick;
     public float speed = 2f;
-    public GameObject Aharfi;
+    public GameObject BuildObject;
     [SerializeField] private Transform brickPosition;
     public float stopDistance = 0.5f;
     public bool isTakeBrick = false;
     public GameObject build;
-    public int j;
+    public int child;
+    public static int j=0;
     // Start is called before the first frame update
     void Start()
     {
+        BuildObject=GameManager.instance.Object[GameManager.instance.ObjectCount];
         TransporterAnimator = GetComponent<Animator>();
-        j=0;
     }
     // Update is called once per frame
     void Update()
     {
-        if (Aharfi.GetComponent<Transform>().GetChild(j).gameObject.activeSelf)
-        {
-            j++;
-        }
 
+        child=BuildObject.GetComponent<Transform>().gameObject.transform.childCount;
+        //Debug.Log("child sayısı:"+child);
+        if (!GameManager.isGameStarted || GameManager.isGameEnded) // Oyun baslamadiysa veya bittiyse
+        {
+            return;
+        }
         if (!isTakeBrick)
         {
         Search();
@@ -50,8 +53,6 @@ public class TransporterController : MonoBehaviour
         
         if (distanceToBrick < stopDistance)
         {
-            Debug.Log("uzaklık   "+stopDistance);
-            
             Pick();
         }
     }
@@ -107,9 +108,15 @@ public class TransporterController : MonoBehaviour
 
     void DropBrick()
     {
-        
         Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
         isTakeBrick=false;
-        Aharfi.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
+        Debug.Log("J değerimiz"+j);
+        BuildObject.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
+        j++;
+        if(j>=child)
+        {
+            GameManager.instance.OnLevelCompleted();
+        }
     }
+    
 }

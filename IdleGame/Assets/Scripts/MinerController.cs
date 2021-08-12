@@ -32,12 +32,10 @@ public class MinerController : MonoBehaviour
         SmoothFollow(Ore.position, 100f * 2f);
         if (distanceToOre < stop)
         {
-            Debug.Log(distanceToOre);
             speed=0;
             MinerAnimator.SetTrigger("Mining");
         }
     }
-
 
     IEnumerator Spawn()
     {
@@ -45,6 +43,7 @@ public class MinerController : MonoBehaviour
         Brick.instance.SpawnBrick();
         StartCoroutine(Spawn());
     }
+
     private void SmoothFollow(Vector3 target, float smoothSpeed)
     {
         Vector3 direction = target - transform.position;

@@ -683,12 +683,13 @@ MonoBehaviour:
   worker: {fileID: 1801973048550859727}
   targetBrick: {fileID: 0}
   speed: 2
-  Aharfi: {fileID: 919132149155446097, guid: 72c1039ea04de6347815bacfd5ed47e5, type: 3}
+  BuildObject: {fileID: 0}
   brickPosition: {fileID: 1801973048126393603}
   stopDistance: 0.5
   isTakeBrick: 0
   build: {fileID: 4195585336353351209, guid: 08ec549dd8f0651458a3d5a9cb1c13ce, type: 3}
-  j: 0
+  Builds: {fileID: 7115470775523433999, guid: 658ee350f3851af44b5b19d4683b6884, type: 3}
+  child: 0
 --- !u!1 &1801973048554040494
 GameObject:
   m_ObjectHideFlags: 0
