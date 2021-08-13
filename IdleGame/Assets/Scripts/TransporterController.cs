@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TransporterController : MonoBehaviour
 {
+    MoneyManager moneyManager;
     Animator TransporterAnimator;
     public GameObject worker;
     public Transform targetBrick;
@@ -20,6 +21,7 @@ public class TransporterController : MonoBehaviour
     {
         BuildObject=GameManager.instance.Object[GameManager.instance.ObjectCount];
         TransporterAnimator = GetComponent<Animator>();
+        moneyManager = FindObjectOfType<MoneyManager>();
     }
     // Update is called once per frame
     void Update()
@@ -40,7 +42,7 @@ public class TransporterController : MonoBehaviour
         }
     }
 
-    void Search()
+    public void Search()
     {
         FindBrick();
         if (!targetBrick) return;
@@ -57,7 +59,7 @@ public class TransporterController : MonoBehaviour
         }
     }
 
-    void FindBrick()
+    public void FindBrick()
     {
         if (targetBrick || Brick.instance.brickPieces.Count <= 0) return;
         targetBrick = Brick.instance.brickPieces[0];
@@ -76,23 +78,26 @@ public class TransporterController : MonoBehaviour
             
     }
 
-    void Pick()
+    public void Pick()
     {
         if (targetBrick)
         {
+            //StartCoroutine(TakeBrick());  
             TransporterAnimator.SetTrigger("Pick");
             Invoke("TakeBrick", 1f);
         }
     }
 
-    void TakeBrick()
+    public void TakeBrick()
     {
+        //TransporterAnimator.SetTrigger("Pick");
+        //yield return new WaitForSeconds(1f);
         targetBrick.parent = brickPosition;
         targetBrick.position = brickPosition.position;
         isTakeBrick=true;
     }
 
-    void Build()
+    public void Build()
     {
         TransporterAnimator.SetTrigger("Walk");
         var distanceToBuild = Vector3.Distance(transform.position, build.transform.position);
@@ -100,14 +105,17 @@ public class TransporterController : MonoBehaviour
         SmoothFollow(build.transform.position, 100f * speed);
         if (distanceToBuild < stopDistance)
         {
-            TransporterAnimator.SetTrigger("Pick");
-            Invoke("DropBrick", 1f);
+            //TransporterAnimator.SetTrigger("Pick");
+            //Invoke("DropBrick", 1f);
+            DropBrick();
+            moneyManager.AddMoney(2);
 
         }
     }
 
-    void DropBrick()
+    public void DropBrick()
     {
+        
         Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
         isTakeBrick=false;
         Debug.Log("J değerimiz"+j);

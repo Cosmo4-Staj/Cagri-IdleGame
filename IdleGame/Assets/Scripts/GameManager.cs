@@ -14,12 +14,11 @@ public class GameManager : MonoBehaviour
     public GameObject finishScreen;
     public GameObject mainScreen;
     public GameObject startScreen;
-    
     public float xPos;
     public float zPos;
     public Text LevelText;
     public int ObjectCount = 0;
-    public GameObject[] Object;
+    public List <GameObject> Object;
 
     void Awake() 
     {
@@ -97,7 +96,7 @@ public class GameManager : MonoBehaviour
     public void GetLevel()
     {
         ObjectCount = PlayerPrefs.GetInt("LevelID", 0); 
-        if (ObjectCount> Object.Length -1 || ObjectCount <0) 
+        if (ObjectCount> Object.Count -1 || ObjectCount <0) 
         {
             ObjectCount = 0;
             PlayerPrefs.SetInt("LevelID", ObjectCount);
@@ -105,4 +104,9 @@ public class GameManager : MonoBehaviour
         Instantiate(Object[ObjectCount],new Vector3(-2f,0.5f,0f), Quaternion.Euler(0,90,0));
     }
     
+    public void Activation() 
+    {
+
+        
+    }
 }
