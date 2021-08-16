@@ -1,34 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TransporterController : MonoBehaviour
 {
-    MoneyManager moneyManager;
+    public static TransporterController instance;
     Animator TransporterAnimator;
-    public GameObject worker;
-    public Transform targetBrick;
-    public float speed = 2f;
-    public GameObject BuildObject;
+
+    public GameObject BuildPrefab;
+    public GameObject buildArea;
+    public GameObject smoke;
+
     [SerializeField] private Transform brickPosition;
+    public Transform targetBrick;
+
+    public float speed = 2f;
     public float stopDistance = 0.5f;
     public bool isTakeBrick = false;
-    public GameObject build;
     public int child;
     public static int j=0;
+
+    void Awake() 
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        BuildObject=GameManager.instance.Object[GameManager.instance.ObjectCount];
         TransporterAnimator = GetComponent<Animator>();
-        moneyManager = FindObjectOfType<MoneyManager>();
     }
     // Update is called once per frame
     void Update()
     {
-
-        child=BuildObject.GetComponent<Transform>().gameObject.transform.childCount;
-        //Debug.Log("child sayısı:"+child);
+        BuildPrefab=GameManager.instance.Object[GameManager.instance.ObjectCount];
+        child=BuildPrefab.GetComponent<Transform>().GetChild(0).gameObject.transform.childCount;
+        GameManager.instance.level(j/(float) child);
         if (!GameManager.isGameStarted || GameManager.isGameEnded) // Oyun baslamadiysa veya bittiyse
         {
             return;
@@ -44,6 +51,7 @@ public class TransporterController : MonoBehaviour
 
     public void Search()
     {
+        
         FindBrick();
         if (!targetBrick) return;
         var targetPos = targetBrick.position; 
@@ -81,48 +89,50 @@ public class TransporterController : MonoBehaviour
     public void Pick()
     {
         if (targetBrick)
-        {
-            //StartCoroutine(TakeBrick());  
+        {  
             TransporterAnimator.SetTrigger("Pick");
-            Invoke("TakeBrick", 1f);
+            //TakeBrick();
+            Invoke("TakeBrick", 1.0f);
         }
     }
 
     public void TakeBrick()
     {
-        //TransporterAnimator.SetTrigger("Pick");
-        //yield return new WaitForSeconds(1f);
+        //GameObject smokeInstance =Instantiate(smoke, brickPosition.transform.position, brickPosition.transform.rotation);
+        //Destroy(smokeInstance.gameObject, 1f);
         targetBrick.parent = brickPosition;
         targetBrick.position = brickPosition.position;
         isTakeBrick=true;
+        
     }
 
     public void Build()
     {
         TransporterAnimator.SetTrigger("Walk");
-        var distanceToBuild = Vector3.Distance(transform.position, build.transform.position);
-        transform.position = Vector3.MoveTowards(transform.position, build.transform.position, speed * Time.deltaTime);
-        SmoothFollow(build.transform.position, 100f * speed);
+        var distanceToBuild = Vector3.Distance(transform.position, buildArea.transform.position);
+        transform.position = Vector3.MoveTowards(transform.position, buildArea.transform.position, speed * Time.deltaTime);
+        SmoothFollow(buildArea.transform.position, 100f * speed);
         if (distanceToBuild < stopDistance)
         {
             //TransporterAnimator.SetTrigger("Pick");
             //Invoke("DropBrick", 1f);
             DropBrick();
-            moneyManager.AddMoney(2);
+            MoneyManager.instance.AddMoney(2);
 
         }
     }
 
     public void DropBrick()
     {
-        
+        GameObject smokeInstance =Instantiate(smoke, Prefab.instance.sortedBrickList[j].transform.position, Prefab.instance.sortedBrickList[j].transform.rotation);
+        Destroy(smokeInstance.gameObject, 1f);
         Destroy(this.GetComponent<Transform>().GetChild(2).GetChild(0).gameObject);
         isTakeBrick=false;
-        Debug.Log("J değerimiz"+j);
-        BuildObject.GetComponent<Transform>().GetChild(j).gameObject.SetActive(true);
+        Prefab.instance.sortedBrickList[j].SetActive(true);
         j++;
         if(j>=child)
         {
+            j=0;
             GameManager.instance.OnLevelCompleted();
         }
     }

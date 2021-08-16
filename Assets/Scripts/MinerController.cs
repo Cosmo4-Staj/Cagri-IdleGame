@@ -7,20 +7,17 @@ public class MinerController : MonoBehaviour
     Animator MinerAnimator;
     public static MinerController instance;
     TransporterController playerManager;
-    public float xPos;
-    public float zPos;
     public float speed =2f;
     public GameObject prefab;
     public Transform Ore;
     public float stop = 2f;
-    //var targetPos = Ore.position;
         
     // Start is called before the first frame update
     void Start()
     {
         MinerAnimator = GetComponent<Animator>();
         instance=this;
-        StartCoroutine(Spawn());    
+        StartCoroutine(Spawn());  
     }
 
     // Update is called once per frame
@@ -39,7 +36,7 @@ public class MinerController : MonoBehaviour
 
     IEnumerator Spawn()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(GameManager.instance.waitfor);
         Brick.instance.SpawnBrick();
         StartCoroutine(Spawn());
     }

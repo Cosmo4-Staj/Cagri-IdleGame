@@ -5,21 +5,26 @@ using UnityEngine.UI;
 
 public class MoneyManager : MonoBehaviour
 {
+    public static MoneyManager instance;
     public Text totalMoney;
     public Text stoneworkerMoney;
     public Text minerMoney;
     public Text powerMoney;
-
-    public int currentMoney = 0;
 
     public Button stoneworkerButton;
     public Button minerButton;
     public Button powerButton;
     public Button superworkerButton;
 
+    public int currentMoney = 0;
     public int stoneworker;
     public int miner;
     public int power;
+
+    void Awake() 
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +35,7 @@ public class MoneyManager : MonoBehaviour
 
         miner = 5;
         stoneworker = 7;
-        power = 15;
+        power = 12;
     }
 
     // Update is called once per frame
@@ -45,6 +50,7 @@ public class MoneyManager : MonoBehaviour
         currentMoney += moneyToAdd;
         CheckMoney();
     }
+
     public void StoneworkerCheck()
     {
         stoneworker=int.Parse(stoneworkerMoney.text);
@@ -53,38 +59,46 @@ public class MoneyManager : MonoBehaviour
         stoneworkerMoney.text = stoneworker.ToString();
         CheckMoney();
     }
+    
     public void MinerCheck()
     {
         miner=int.Parse(minerMoney.text);
         Check(miner);
-        miner += 3;
+        miner += 2;
         minerMoney.text = miner.ToString();
         CheckMoney();
     }
+
     public void PowerCheck()
     {
         power=int.Parse(powerMoney.text);
         Check(power);
-        power += 3;
+        power += 5;
         powerMoney.text = power.ToString();
         CheckMoney();
     }
-    public void Check(int cash)
-    {
-        if (currentMoney - cash < 0)
+
+    public void SuperworkerCheck() {
+        if (currentMoney >= 100 && GameManager.instance.percent >= 0.5 && GameManager.instance.superworkerButton.gameObject.activeSelf == true)
         {
-            Debug.Log("Not enough money");
+            superworkerButton.interactable = true;
         }
         else
         {
-            currentMoney -= cash;
-            if (currentMoney - cash < 0)
-            {
-                stoneworkerButton.interactable = false;
-                minerButton.interactable = false;
-                powerButton.interactable = false;
-            }
+            superworkerButton.interactable = false;
         }
+    }
+
+    public void Check(int cash)
+    {
+        currentMoney -= cash;
+        if (currentMoney - cash < 0)
+        {
+            stoneworkerButton.interactable = false;
+            minerButton.interactable = false;
+            powerButton.interactable = false;
+        }
+        
     }
 
     void CheckMoney()
@@ -93,7 +107,7 @@ public class MoneyManager : MonoBehaviour
         {
             stoneworkerButton.interactable = true;
         }
-        else if (currentMoney < stoneworker)
+        else
         {
             stoneworkerButton.interactable = false;
         }
@@ -101,7 +115,7 @@ public class MoneyManager : MonoBehaviour
         { 
             minerButton.interactable = true;
         }
-        else if (currentMoney < miner)
+        else
         {
             minerButton.interactable = false;
         }
@@ -109,7 +123,7 @@ public class MoneyManager : MonoBehaviour
         {
             powerButton.interactable = true;
         }
-        else if (currentMoney < power)
+        else
         {
             powerButton.interactable = false;
         }

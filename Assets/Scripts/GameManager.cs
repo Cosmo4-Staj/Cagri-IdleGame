@@ -14,11 +14,23 @@ public class GameManager : MonoBehaviour
     public GameObject finishScreen;
     public GameObject mainScreen;
     public GameObject startScreen;
-    public float xPos;
-    public float zPos;
+    public GameObject Build;
+    public GameObject TransporterParent;
+    public GameObject MinerParent;
+
+    public float waitfor = 5f;
+    public float percent;
+    public int ObjectCount=0;
+    public int TransporterCount=1;
+    public int MinerCount=1;
+    
     public Text LevelText;
-    public int ObjectCount = 0;
+
+    public Button superworkerButton;
+    
     public List <GameObject> Object;
+
+    public Image levelBar;
 
     void Awake() 
     {
@@ -29,16 +41,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        ObjectCount = 0;
-        PlayerPrefs.SetInt("LevelID", ObjectCount); 
         GetLevel();
-        //LevelText.text = "Level " + (ObjectCount +1).ToString();
 
     }
 
     void Update()
     {
-        
+        LevelText.text="Level "+(ObjectCount+1).ToString();
     }
 
     public void OnLevelStarted()
@@ -46,6 +55,9 @@ public class GameManager : MonoBehaviour
         isGameStarted = true;
         mainScreen.SetActive(true);
         startScreen.SetActive(false);
+        SpawnTransporter();
+        SpawnMiner();
+        Load();
     }
 
     public void OnLevelEnded() // Game Over?
@@ -67,30 +79,32 @@ public class GameManager : MonoBehaviour
 
     public void SpawnTransporter()
     {
-        xPos=  Random.Range(1.5f,5.5f);
-        zPos=  Random.Range(0f,10f);
-        Instantiate(Transporter,new Vector3(xPos,0.05268812f,zPos),Quaternion.identity);
+        Instantiate(Transporter,new Vector3(6.5f,0.05268812f,10f),Quaternion.identity,TransporterParent.transform);
     }
 
     public void SpawnMiner()
     {
-        xPos=  Random.Range(-13f,-10f);
-        zPos=  Random.Range(-6f,0f);
-        Instantiate(Miner,new Vector3(xPos,0f,zPos),Quaternion.identity);
+        Instantiate(Miner,new Vector3(-16f,0f,-6f),Quaternion.identity,MinerParent.transform);
+    }
+
+    public void PowerButton()
+    {
+        waitfor-=0.1f;
+        MoneyManager.instance.PowerCheck();
     }
 
     public void SpawnSuperWorker()
     {
-        xPos=  Random.Range(1.5f,5.5f);
-        zPos=  Random.Range(0f,10f);
-        Instantiate(SuperWorker,new Vector3(xPos,0f,zPos),Quaternion.identity);
+        Instantiate(SuperWorker,new Vector3(6.5f,0f,10f),Quaternion.identity);
     }
 
     public void NextLevel ()
     {
+        Save();
         ObjectCount++;
         PlayerPrefs.SetInt("LevelID", ObjectCount); 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        isGameEnded=false;
     }
 
     public void GetLevel()
@@ -98,15 +112,51 @@ public class GameManager : MonoBehaviour
         ObjectCount = PlayerPrefs.GetInt("LevelID", 0); 
         if (ObjectCount> Object.Count -1 || ObjectCount <0) 
         {
+            TransporterCount=1;
+            MinerCount=1;
+            PlayerPrefs.SetInt("TransporterCount", TransporterCount);
+            PlayerPrefs.SetInt("MinerCount", MinerCount);
             ObjectCount = 0;
             PlayerPrefs.SetInt("LevelID", ObjectCount);
         }
-        Instantiate(Object[ObjectCount],new Vector3(-2f,0.5f,0f), Quaternion.Euler(0,90,0));
-    }
-    
-    public void Activation() 
-    {
 
-        
+        Instantiate(Object[ObjectCount],Vector3.zero, Quaternion.identity,Build.transform);
+
+        if (!(ObjectCount == 4 || ObjectCount == 9))
+        {
+            superworkerButton.gameObject.SetActive(false);
+        }
+
+        if (ObjectCount == 4 || ObjectCount == 9)
+        {
+            superworkerButton.gameObject.SetActive(true);
+            superworkerButton.interactable = false;
+        }
+    }
+
+    public void Save()
+    {
+        TransporterCount=TransporterParent.GetComponent<Transform>().gameObject.transform.childCount;
+        Debug.Log("transporter sayısı"+TransporterCount);
+        PlayerPrefs.SetInt("TransporterCount", TransporterCount);
+        MinerCount=MinerParent.GetComponent<Transform>().gameObject.transform.childCount;
+        PlayerPrefs.SetInt("MinerCount", MinerCount);
+    }
+    public void Load()
+    {
+        TransporterCount = PlayerPrefs.GetInt("TransporterCount", 0); 
+        MinerCount = PlayerPrefs.GetInt("MinerCount", 0); 
+        for(int i=0;i<TransporterCount/3-1;i++){
+            SpawnTransporter();
+        }
+        for(int i=0;i<MinerCount/3-1;i++){
+            SpawnMiner();
+        }
+    }
+
+    public void level(float fillAmount)
+    {
+        levelBar.fillAmount = fillAmount;
+        percent = fillAmount;
     }
 }
